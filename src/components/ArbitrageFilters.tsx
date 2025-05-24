@@ -32,11 +32,14 @@ const ArbitrageFilters: React.FC<FiltersProps> = ({
     { value: 'low', label: 'Low Profit', icon: TrendingDown }
   ];
 
-  const exchanges = ['All', 'Binance', 'Bybit', 'OKX', 'Bitget', 'Gate.io'];
+  const exchanges = [
+    'All', 'Binance', 'Bybit', 'OKX', 'Bitget', 'Gate.io', 'Huobi',
+    'GMX', 'Hyperliquid', 'Aevo', 'dYdX', 'Kraken', 'BitMEX', 'KuCoin', 'Extended'
+  ];
   
   const sortOptions = [
     { value: 'profitability', label: 'Profitability' },
-    { value: 'rate', label: 'Funding Rate' },
+    { value: 'rate', label: 'Arbitrage Profit' },
     { value: 'volume', label: 'Volume' },
     { value: 'change', label: '24h Change' }
   ];
@@ -82,7 +85,7 @@ const ArbitrageFilters: React.FC<FiltersProps> = ({
 
         {/* Exchange Filter */}
         <div className="flex flex-wrap gap-2">
-          {exchanges.map((exchange) => (
+          {exchanges.slice(0, 8).map((exchange) => (
             <Button
               key={exchange}
               variant={selectedExchange === exchange ? "default" : "outline"}
@@ -97,6 +100,19 @@ const ArbitrageFilters: React.FC<FiltersProps> = ({
               {exchange}
             </Button>
           ))}
+          {exchanges.length > 8 && (
+            <select
+              value={selectedExchange}
+              onChange={(e) => onExchangeChange(e.target.value)}
+              className="px-3 py-1 bg-dark-200/50 border border-gray-600 rounded-md text-white text-sm focus:border-neon-cyan focus:outline-none"
+            >
+              {exchanges.slice(8).map((exchange) => (
+                <option key={exchange} value={exchange} className="bg-dark-200">
+                  {exchange}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* Sort Options */}

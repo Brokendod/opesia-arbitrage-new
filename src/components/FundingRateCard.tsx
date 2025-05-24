@@ -1,12 +1,16 @@
 
 import React from 'react';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ArrowRightLeft } from 'lucide-react';
 
-interface FundingRate {
+interface ArbitrageOpportunity {
   id: string;
-  exchange: string;
   symbol: string;
-  rate: number;
+  longExchange: string;
+  shortExchange: string;
+  longRate: number;
+  shortRate: number;
+  arbitrageProfit: number;
+  profitPercentage: number;
   change24h: number;
   profitability: 'high' | 'medium' | 'low';
   trend: 'up' | 'down' | 'neutral';
@@ -15,7 +19,7 @@ interface FundingRate {
 }
 
 interface FundingRateCardProps {
-  data: FundingRate;
+  data: ArbitrageOpportunity;
   onClick: () => void;
   isHighlighted?: boolean;
 }
@@ -65,9 +69,13 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-orbitron font-semibold text-lg text-white">
-              {data.exchange}
+              {data.symbol}
             </h3>
-            <p className="text-gray-400 text-sm">{data.symbol}</p>
+            <div className="flex items-center text-sm text-gray-400 mt-1">
+              <span className="text-neon-green">{data.longExchange}</span>
+              <ArrowRightLeft className="w-3 h-3 mx-2 text-gray-500" />
+              <span className="text-neon-pink">{data.shortExchange}</span>
+            </div>
           </div>
           <div className={getTrendClass()}>
             {getTrendIcon()}
@@ -75,13 +83,25 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
           </div>
         </div>
 
-        {/* Funding Rate */}
+        {/* Arbitrage Profit */}
         <div className="mb-4">
           <div className="flex items-baseline">
-            <span className="text-2xl font-orbitron font-bold text-white">
-              {(data.rate * 100).toFixed(4)}%
+            <span className="text-2xl font-orbitron font-bold text-neon-cyan">
+              {data.profitPercentage.toFixed(4)}%
             </span>
-            <span className="ml-2 text-gray-400 text-sm">funding rate</span>
+            <span className="ml-2 text-gray-400 text-sm">arbitrage profit</span>
+          </div>
+        </div>
+
+        {/* Funding Rates Comparison */}
+        <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-dark-200/30 rounded-lg">
+          <div className="text-center">
+            <p className="text-gray-400 text-xs">Long on {data.longExchange}</p>
+            <p className="text-neon-green font-medium">{(data.longRate * 100).toFixed(4)}%</p>
+          </div>
+          <div className="text-center">
+            <p className="text-gray-400 text-xs">Short on {data.shortExchange}</p>
+            <p className="text-neon-pink font-medium">{(data.shortRate * 100).toFixed(4)}%</p>
           </div>
         </div>
 

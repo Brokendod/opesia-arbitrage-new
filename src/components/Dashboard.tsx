@@ -6,24 +6,49 @@ import ArbitrageFilters from './ArbitrageFilters';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, BarChart3, DollarSign, TrendingUp } from 'lucide-react';
 
-// Mock data generator
-const generateMockData = () => {
-  const exchanges = ['Binance', 'Bybit', 'OKX', 'Bitget', 'Gate.io', 'Huobi'];
-  const symbols = ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'AVAX-USDT'];
+// Mock data generator for arbitrage opportunities
+const generateArbitrageOpportunities = () => {
+  const exchanges = ['Binance', 'Bybit', 'OKX', 'Bitget', 'Gate.io', 'Huobi', 'GMX', 'Hyperliquid', 'Aevo', 'dYdX', 'Kraken', 'BitMEX', 'KuCoin', 'Extended'];
+  const symbols = ['BTC-USDT', 'ETH-USDT', 'SOL-USDT', 'AVAX-USDT', 'ARB-USDT', 'OP-USDT'];
   
-  return exchanges.flatMap(exchange => 
-    symbols.map(symbol => ({
-      id: `${exchange}-${symbol}`,
-      exchange,
+  const opportunities = [];
+  
+  for (let i = 0; i < 12; i++) {
+    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    
+    // Pick two different exchanges for arbitrage
+    const shuffled = [...exchanges].sort(() => 0.5 - Math.random());
+    const longExchange = shuffled[0];
+    const shortExchange = shuffled[1];
+    
+    // Generate funding rates with intentional spread for arbitrage
+    const baseFundingRate = (Math.random() * 0.003 - 0.0015); // -0.15% to 0.15%
+    const spread = Math.random() * 0.002 + 0.0005; // 0.05% to 0.25% spread
+    
+    const longRate = baseFundingRate;
+    const shortRate = baseFundingRate + spread;
+    
+    const arbitrageProfit = Math.abs(shortRate - longRate);
+    const profitability = arbitrageProfit > 0.0015 ? 'high' : arbitrageProfit > 0.0008 ? 'medium' : 'low';
+    
+    opportunities.push({
+      id: `${longExchange}-${shortExchange}-${symbol}-${i}`,
       symbol,
-      rate: (Math.random() * 0.002 - 0.001), // -0.1% to 0.1%
-      change24h: (Math.random() * 20 - 10), // -10% to 10%
-      profitability: ['high', 'medium', 'low'][Math.floor(Math.random() * 3)] as 'high' | 'medium' | 'low',
-      trend: ['up', 'down', 'neutral'][Math.floor(Math.random() * 3)] as 'up' | 'down' | 'neutral',
+      longExchange,
+      shortExchange,
+      longRate,
+      shortRate,
+      arbitrageProfit,
+      profitPercentage: arbitrageProfit * 100,
+      profitability,
+      trend: arbitrageProfit > 0.001 ? 'up' : 'neutral',
       volume: `$${(Math.random() * 1000 + 100).toFixed(1)}M`,
       nextFunding: `${Math.floor(Math.random() * 8 + 1)}h ${Math.floor(Math.random() * 60)}m`,
-    }))
-  );
+      change24h: (Math.random() * 40 - 20), // -20% to 20%
+    });
+  }
+  
+  return opportunities;
 };
 
 const generateChartData = () => {
@@ -39,7 +64,7 @@ const generateChartData = () => {
 };
 
 const Dashboard: React.FC = () => {
-  const [fundingRates, setFundingRates] = useState(generateMockData());
+  const [arbitrageOpportunities, setArbitrageOpportunities] = useState(generateArbitrageOpportunities());
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [chartData] = useState(generateChartData());
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -53,7 +78,7 @@ const Dashboard: React.FC = () => {
   // Auto-refresh every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      setFundingRates(generateMockData());
+      setArbitrageOpportunities(generateArbitrageOpportunities());
     }, 10000);
     return () => clearInterval(interval);
   }, []);
@@ -61,18 +86,21 @@ const Dashboard: React.FC = () => {
   const handleRefresh = () => {
     setIsRefreshing(true);
     setTimeout(() => {
-      setFundingRates(generateMockData());
+      setArbitrageOpportunities(generateArbitrageOpportunities());
       setIsRefreshing(false);
     }, 1000);
   };
 
   // Filter and sort data
-  const filteredData = fundingRates
+  const filteredData = arbitrageOpportunities
     .filter(item => {
-      const matchesSearch = item.exchange.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      const matchesSearch = item.longExchange.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          item.shortExchange.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.symbol.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesProfitability = selectedProfitability === 'all' || item.profitability === selectedProfitability;
-      const matchesExchange = selectedExchange === 'All' || item.exchange === selectedExchange;
+      const matchesExchange = selectedExchange === 'All' || 
+                             item.longExchange === selectedExchange || 
+                             item.shortExchange === selectedExchange;
       return matchesSearch && matchesProfitability && matchesExchange;
     })
     .sort((a, b) => {
@@ -81,7 +109,7 @@ const Dashboard: React.FC = () => {
           const profitOrder = { high: 3, medium: 2, low: 1 };
           return profitOrder[b.profitability] - profitOrder[a.profitability];
         case 'rate':
-          return Math.abs(b.rate) - Math.abs(a.rate);
+          return b.arbitrageProfit - a.arbitrageProfit;
         case 'change':
           return Math.abs(b.change24h) - Math.abs(a.change24h);
         default:
@@ -89,13 +117,13 @@ const Dashboard: React.FC = () => {
       }
     });
 
-  const selectedExchangeData = selectedCard ? 
-    fundingRates.find(item => item.id === selectedCard) : null;
+  const selectedOpportunityData = selectedCard ? 
+    arbitrageOpportunities.find(item => item.id === selectedCard) : null;
 
   // Calculate stats
   const totalOpportunities = filteredData.length;
   const highProfitCount = filteredData.filter(item => item.profitability === 'high').length;
-  const avgRate = filteredData.reduce((sum, item) => sum + Math.abs(item.rate), 0) / filteredData.length;
+  const avgProfit = filteredData.reduce((sum, item) => sum + item.arbitrageProfit, 0) / filteredData.length;
 
   return (
     <div className="min-h-screen p-6 space-y-8">
@@ -154,9 +182,9 @@ const Dashboard: React.FC = () => {
               <DollarSign className="w-6 h-6 text-neon-purple" />
             </div>
             <div className="ml-4">
-              <p className="text-gray-400 text-sm">Avg Rate</p>
+              <p className="text-gray-400 text-sm">Avg Profit</p>
               <p className="font-orbitron font-bold text-2xl text-white">
-                {(avgRate * 100).toFixed(4)}%
+                {(avgProfit * 100).toFixed(4)}%
               </p>
             </div>
           </div>
@@ -177,7 +205,7 @@ const Dashboard: React.FC = () => {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Funding Rates Grid */}
+        {/* Arbitrage Opportunities Grid */}
         <div className="xl:col-span-2">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredData.map((item) => (
@@ -195,11 +223,11 @@ const Dashboard: React.FC = () => {
         {/* Chart Panel */}
         <div className="xl:col-span-1">
           <div className="sticky top-6">
-            {selectedExchangeData ? (
+            {selectedOpportunityData ? (
               <div className="animate-slide-up">
                 <FundingRateChart
                   data={chartData}
-                  exchange={selectedExchangeData.exchange}
+                  exchange={`${selectedOpportunityData.longExchange} vs ${selectedOpportunityData.shortExchange}`}
                 />
               </div>
             ) : (
@@ -207,7 +235,7 @@ const Dashboard: React.FC = () => {
                 <div className="text-center">
                   <BarChart3 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
                   <p className="text-gray-400">
-                    Select an opportunity to view detailed charts
+                    Select an arbitrage opportunity to view detailed charts
                   </p>
                 </div>
               </div>
