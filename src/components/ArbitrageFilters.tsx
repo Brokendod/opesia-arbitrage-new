@@ -1,0 +1,121 @@
+
+import React from 'react';
+import { Search, Filter, TrendingUp, TrendingDown, Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+interface FiltersProps {
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  selectedProfitability: string;
+  onProfitabilityChange: (value: string) => void;
+  selectedExchange: string;
+  onExchangeChange: (value: string) => void;
+  sortBy: string;
+  onSortChange: (value: string) => void;
+}
+
+const ArbitrageFilters: React.FC<FiltersProps> = ({
+  searchTerm,
+  onSearchChange,
+  selectedProfitability,
+  onProfitabilityChange,
+  selectedExchange,
+  onExchangeChange,
+  sortBy,
+  onSortChange
+}) => {
+  const profitabilityOptions = [
+    { value: 'all', label: 'All Opportunities', icon: Star },
+    { value: 'high', label: 'High Profit', icon: TrendingUp },
+    { value: 'medium', label: 'Medium Profit', icon: Filter },
+    { value: 'low', label: 'Low Profit', icon: TrendingDown }
+  ];
+
+  const exchanges = ['All', 'Binance', 'Bybit', 'OKX', 'Bitget', 'Gate.io'];
+  
+  const sortOptions = [
+    { value: 'profitability', label: 'Profitability' },
+    { value: 'rate', label: 'Funding Rate' },
+    { value: 'volume', label: 'Volume' },
+    { value: 'change', label: '24h Change' }
+  ];
+
+  return (
+    <div className="data-card mb-8">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Search */}
+        <div className="flex-1">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search exchanges or symbols..."
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="pl-10 bg-dark-200/50 border-gray-600 text-white placeholder-gray-400 focus:border-neon-cyan"
+            />
+          </div>
+        </div>
+
+        {/* Profitability Filter */}
+        <div className="flex flex-wrap gap-2">
+          {profitabilityOptions.map((option) => {
+            const Icon = option.icon;
+            return (
+              <Button
+                key={option.value}
+                variant={selectedProfitability === option.value ? "default" : "outline"}
+                size="sm"
+                onClick={() => onProfitabilityChange(option.value)}
+                className={`${
+                  selectedProfitability === option.value
+                    ? 'bg-gradient-to-r from-techno-500 to-neon-purple text-white'
+                    : 'border-gray-600 text-gray-300 hover:border-neon-cyan hover:text-neon-cyan'
+                } transition-all duration-300`}
+              >
+                <Icon className="w-4 h-4 mr-2" />
+                {option.label}
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Exchange Filter */}
+        <div className="flex flex-wrap gap-2">
+          {exchanges.map((exchange) => (
+            <Button
+              key={exchange}
+              variant={selectedExchange === exchange ? "default" : "outline"}
+              size="sm"
+              onClick={() => onExchangeChange(exchange)}
+              className={`${
+                selectedExchange === exchange
+                  ? 'bg-gradient-to-r from-neon-purple to-neon-cyan text-white'
+                  : 'border-gray-600 text-gray-300 hover:border-neon-cyan hover:text-neon-cyan'
+              } transition-all duration-300`}
+            >
+              {exchange}
+            </Button>
+          ))}
+        </div>
+
+        {/* Sort Options */}
+        <div className="flex gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => onSortChange(e.target.value)}
+            className="px-3 py-2 bg-dark-200/50 border border-gray-600 rounded-md text-white text-sm focus:border-neon-cyan focus:outline-none"
+          >
+            {sortOptions.map((option) => (
+              <option key={option.value} value={option.value} className="bg-dark-200">
+                Sort by {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ArbitrageFilters;
