@@ -123,7 +123,7 @@ const Dashboard: React.FC = () => {
   // Calculate stats
   const totalOpportunities = filteredData.length;
   const highProfitCount = filteredData.filter(item => item.profitability === 'high').length;
-  const avgProfit = filteredData.reduce((sum, item) => sum + item.arbitrageProfit, 0) / filteredData.length;
+  const bestCurrentAPY = Math.max(...filteredData.map(item => item.arbitrageProfit)) * 100;
 
   return (
     <div className="min-h-screen p-6 space-y-8">
@@ -182,9 +182,9 @@ const Dashboard: React.FC = () => {
               <DollarSign className="w-6 h-6 text-neon-purple" />
             </div>
             <div className="ml-4">
-              <p className="text-gray-400 text-sm">Avg Profit</p>
+              <p className="text-gray-400 text-sm">Best Current APY</p>
               <p className="font-orbitron font-bold text-2xl text-white">
-                {(avgProfit * 100).toFixed(4)}%
+                {bestCurrentAPY.toFixed(4)}%
               </p>
             </div>
           </div>
@@ -228,6 +228,7 @@ const Dashboard: React.FC = () => {
                 <FundingRateChart
                   data={chartData}
                   exchange={`${selectedOpportunityData.longExchange} vs ${selectedOpportunityData.shortExchange}`}
+                  opportunityData={selectedOpportunityData}
                 />
               </div>
             ) : (
