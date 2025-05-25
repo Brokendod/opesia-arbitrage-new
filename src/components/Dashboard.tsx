@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import FundingRateCard from './FundingRateCard';
 import FundingRateChart from './FundingRateChart';
 import ArbitrageFilters from './ArbitrageFilters';
+import ReferralLinks from './ReferralLinks';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, BarChart3, DollarSign, TrendingUp } from 'lucide-react';
 
@@ -197,6 +197,9 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Referral Links Section */}
+      <ReferralLinks />
 
       {/* Filters */}
       <ArbitrageFilters
