@@ -123,7 +123,14 @@ const Dashboard: React.FC = () => {
   // Calculate stats
   const totalOpportunities = filteredData.length;
   const highProfitCount = filteredData.filter(item => item.profitability === 'high').length;
-  const bestCurrentAPY = Math.max(...filteredData.map(item => item.arbitrageProfit)) * 100;
+  
+  // Calculate best current APY instead of spread
+  const calculateAPY = (spread: number) => {
+    const fundingsPerYear = 365 * 3; // 3 funding per day
+    return spread * fundingsPerYear * 100;
+  };
+  
+  const bestCurrentAPY = calculateAPY(Math.max(...filteredData.map(item => item.arbitrageProfit)));
 
   return (
     <div className="min-h-screen p-6 space-y-8">
@@ -184,7 +191,7 @@ const Dashboard: React.FC = () => {
             <div className="ml-4">
               <p className="text-gray-400 text-sm">Best Current APY</p>
               <p className="font-orbitron font-bold text-2xl text-white">
-                {bestCurrentAPY.toFixed(4)}%
+                {bestCurrentAPY.toFixed(2)}%
               </p>
             </div>
           </div>

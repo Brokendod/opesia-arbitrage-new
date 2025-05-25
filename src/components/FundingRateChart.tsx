@@ -36,14 +36,22 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
     ...point,
     longRate: opportunityData ? opportunityData.longRate + (Math.random() * 0.0002 - 0.0001) : point.rate,
     shortRate: opportunityData ? opportunityData.shortRate + (Math.random() * 0.0002 - 0.0001) : point.rate + 0.001,
-    arbitrageProfit: opportunityData ? Math.abs((opportunityData.shortRate + (Math.random() * 0.0002 - 0.0001)) - (opportunityData.longRate + (Math.random() * 0.0002 - 0.0001))) : Math.abs(point.rate - (point.rate + 0.001))
+    spread: opportunityData ? Math.abs((opportunityData.shortRate + (Math.random() * 0.0002 - 0.0001)) - (opportunityData.longRate + (Math.random() * 0.0002 - 0.0001))) : Math.abs(point.rate - (point.rate + 0.001))
   }));
+
+  // Calculate APY for the current spread
+  const calculateAPY = (spread: number) => {
+    const fundingsPerYear = 365 * 3; // 3 funding per day
+    return spread * fundingsPerYear * 100;
+  };
+
+  const currentAPY = opportunityData ? calculateAPY(opportunityData.arbitrageProfit) : 0;
 
   return (
     <div className="data-card">
       <div className="mb-6">
         <h3 className="font-orbitron font-semibold text-xl text-white mb-2">
-          {opportunityData ? `${opportunityData.symbol} Arbitrage Analysis` : exchange}
+          {opportunityData ? `${opportunityData.symbol} Spread Analysis` : exchange}
         </h3>
         <p className="text-gray-400">
           {opportunityData ? 
@@ -56,11 +64,17 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
       {/* Arbitrage Summary */}
       {opportunityData && (
         <div className="mb-6 p-4 bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 rounded-lg border border-neon-cyan/20">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="text-center">
-              <p className="text-gray-400 text-sm">Current Profit</p>
+              <p className="text-gray-400 text-sm">Current Spread</p>
               <p className="text-neon-cyan font-orbitron font-bold text-xl">
                 {opportunityData.profitPercentage.toFixed(4)}%
+              </p>
+            </div>
+            <div className="text-center">
+              <p className="text-gray-400 text-sm">Estimated APY</p>
+              <p className="text-neon-orange font-orbitron font-bold text-xl">
+                {currentAPY.toFixed(2)}%
               </p>
             </div>
             <div className="text-center">
@@ -89,7 +103,7 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
                 <stop offset="5%" stopColor="#ff0080" stopOpacity={0.8}/>
                 <stop offset="95%" stopColor="#ff0080" stopOpacity={0}/>
               </linearGradient>
-              <linearGradient id="colorArbitrageProfit" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="colorSpread" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#00f5ff" stopOpacity={0.8}/>
                 <stop offset="95%" stopColor="#00f5ff" stopOpacity={0}/>
               </linearGradient>
@@ -129,11 +143,11 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
                 />
                 <Line
                   type="monotone"
-                  dataKey="arbitrageProfit"
+                  dataKey="spread"
                   stroke="#00f5ff"
                   strokeWidth={3}
                   dot={{ fill: '#00f5ff', strokeWidth: 2, r: 3 }}
-                  name="Arbitrage Profit"
+                  name="Spread"
                 />
               </>
             ) : (
@@ -143,7 +157,7 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
                 stroke="#00f5ff"
                 strokeWidth={2}
                 fillOpacity={1}
-                fill="url(#colorArbitrageProfit)"
+                fill="url(#colorSpread)"
                 strokeDasharray="0"
                 animationDuration={1500}
               />
@@ -169,7 +183,7 @@ const FundingRateChart: React.FC<FundingRateChartProps> = ({ data, exchange, opp
               </p>
             </div>
             <div className="text-center">
-              <p className="text-gray-400 text-sm">Spread</p>
+              <p className="text-gray-400 text-sm">Current Spread</p>
               <p className="text-neon-cyan font-orbitron font-semibold">
                 {(opportunityData.arbitrageProfit * 100).toFixed(4)}%
               </p>

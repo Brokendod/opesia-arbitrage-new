@@ -53,6 +53,14 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
     }
   };
 
+  // Calculate APY (assuming funding happens every 8 hours = 3 times per day = 1095 times per year)
+  const calculateAPY = (spread: number) => {
+    const fundingsPerYear = 365 * 3; // 3 funding per day
+    return spread * fundingsPerYear * 100;
+  };
+
+  const spreadAPY = calculateAPY(data.arbitrageProfit);
+
   return (
     <div 
       onClick={onClick}
@@ -83,13 +91,19 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
           </div>
         </div>
 
-        {/* Arbitrage Profit */}
+        {/* Spread */}
         <div className="mb-4">
           <div className="flex items-baseline">
             <span className="text-2xl font-orbitron font-bold text-neon-cyan">
               {data.profitPercentage.toFixed(4)}%
             </span>
-            <span className="ml-2 text-gray-400 text-sm">arbitrage profit</span>
+            <span className="ml-2 text-gray-400 text-sm">spread</span>
+          </div>
+          <div className="mt-1">
+            <span className="text-sm text-gray-400">APY: </span>
+            <span className="text-neon-orange font-orbitron font-semibold">
+              {spreadAPY.toFixed(2)}%
+            </span>
           </div>
         </div>
 
