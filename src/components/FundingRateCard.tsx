@@ -29,22 +29,6 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
   onClick, 
   isHighlighted = false 
 }) => {
-  const getTrendIcon = () => {
-    switch (data.trend) {
-      case 'up': return <TrendingUp className="w-4 h-4" />;
-      case 'down': return <TrendingDown className="w-4 h-4" />;
-      default: return <Minus className="w-4 h-4" />;
-    }
-  };
-
-  const getTrendClass = () => {
-    switch (data.trend) {
-      case 'up': return 'trend-up';
-      case 'down': return 'trend-down';
-      default: return 'trend-neutral';
-    }
-  };
-
   const getProfitabilityGlow = () => {
     switch (data.profitability) {
       case 'high': return 'animate-glow';
@@ -84,10 +68,6 @@ const FundingRateCard: React.FC<FundingRateCardProps> = ({
               <ArrowRightLeft className="w-3 h-3 mx-2 text-gray-500" />
               <span className="text-neon-pink">{data.shortExchange}</span>
             </div>
-          </div>
-          <div className={getTrendClass()}>
-            {getTrendIcon()}
-            <span className="ml-1">{Math.abs(data.change24h).toFixed(2)}%</span>
           </div>
         </div>
 
