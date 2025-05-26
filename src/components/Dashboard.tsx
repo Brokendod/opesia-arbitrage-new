@@ -4,7 +4,8 @@ import FundingRateChart from './FundingRateChart';
 import ArbitrageFilters from './ArbitrageFilters';
 import ReferralLinks from './ReferralLinks';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, BarChart3, DollarSign, TrendingUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { RefreshCw, BarChart3, DollarSign, TrendingUp, ChevronDown, ExternalLink } from 'lucide-react';
 
 // Mock data generator for arbitrage opportunities
 const generateArbitrageOpportunities = () => {
@@ -68,6 +69,7 @@ const Dashboard: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [chartData] = useState(generateChartData());
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isReferralLinksOpen, setIsReferralLinksOpen] = useState(false);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -198,9 +200,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Referral Links Section */}
-      <ReferralLinks />
-
       {/* Filters */}
       <ArbitrageFilters
         searchTerm={searchTerm}
@@ -254,6 +253,36 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Collapsible Referral Links Section */}
+      <Collapsible open={isReferralLinksOpen} onOpenChange={setIsReferralLinksOpen}>
+        <CollapsibleTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full h-auto p-6 bg-gradient-to-r from-dark-100/90 to-dark-200/90 border-neon-orange/30 hover:border-neon-orange/50 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-neon-orange/20 to-neon-yellow/20 rounded-xl">
+                  <ExternalLink className="w-6 h-6 text-neon-orange" />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-orbitron font-bold text-xl bg-gradient-to-r from-neon-orange to-neon-yellow bg-clip-text text-transparent">
+                    🚀 Plateformes Recommandées
+                  </h3>
+                  <p className="text-gray-400 font-orbitron text-sm">
+                    Accédez aux meilleures plateformes avec des bonus exclusifs
+                  </p>
+                </div>
+              </div>
+              <ChevronDown className={`w-6 h-6 text-neon-orange transition-transform duration-300 ${isReferralLinksOpen ? 'rotate-180' : ''}`} />
+            </div>
+          </Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="mt-4">
+          <ReferralLinks />
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 };
