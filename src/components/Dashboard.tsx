@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import FundingRateCard from './FundingRateCard';
 import FundingRateChart from './FundingRateChart';
@@ -135,155 +136,176 @@ const Dashboard: React.FC = () => {
   const bestCurrentAPY = calculateAPY(Math.max(...filteredData.map(item => item.arbitrageProfit)));
 
   return (
-    <div className="min-h-screen p-6 space-y-8">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div>
-          <h1 className="font-orbitron font-bold text-4xl bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
-            Funding Rate Arbitrage
-          </h1>
-          <p className="text-gray-400 mt-2">
-            Ultra-futuristic interface for funding rate opportunities
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <Button 
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="bg-gradient-to-r from-techno-500 to-neon-purple hover:from-techno-600 hover:to-neon-purple/80 transition-all duration-300"
-          >
-            <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-            Refresh Data
-          </Button>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="data-card">
-          <div className="flex items-center">
-            <div className="p-3 bg-neon-cyan/20 rounded-lg">
-              <BarChart3 className="w-6 h-6 text-neon-cyan" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">Total Opportunities</p>
-              <p className="font-orbitron font-bold text-2xl text-white">{totalOpportunities}</p>
-            </div>
+    <>
+      {/* SEO-optimized header with semantic HTML */}
+      <header className="min-h-screen p-6 space-y-8">
+        {/* Main heading section */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div>
+            <h1 className="font-orbitron font-bold text-4xl bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">
+              Opesia
+            </h1>
+            <h2 className="text-gray-400 mt-2 font-orbitron text-lg">
+              Plateforme d'Arbitrage des Taux de Financement Crypto
+            </h2>
+            <p className="text-gray-300 mt-1 text-sm max-w-2xl">
+              Interface ultra-futuriste pour découvrir les meilleures opportunités d'arbitrage de taux de financement. 
+              Maximisez vos profits avec des données en temps réel de Binance, Bybit, OKX et plus encore.
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <Button 
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="bg-gradient-to-r from-techno-500 to-neon-purple hover:from-techno-600 hover:to-neon-purple/80 transition-all duration-300"
+              aria-label="Actualiser les données d'arbitrage"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Actualiser les Données
+            </Button>
           </div>
         </div>
-        
-        <div className="data-card">
-          <div className="flex items-center">
-            <div className="p-3 bg-neon-green/20 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-neon-green" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">High Profit Ops</p>
-              <p className="font-orbitron font-bold text-2xl text-neon-green">{highProfitCount}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="data-card">
-          <div className="flex items-center">
-            <div className="p-3 bg-neon-purple/20 rounded-lg">
-              <DollarSign className="w-6 h-6 text-neon-purple" />
-            </div>
-            <div className="ml-4">
-              <p className="text-gray-400 text-sm">Best Current APY</p>
-              <p className="font-orbitron font-bold text-2xl text-white">
-                {bestCurrentAPY.toFixed(2)}%
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Filters */}
-      <ArbitrageFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedProfitability={selectedProfitability}
-        onProfitabilityChange={setSelectedProfitability}
-        selectedExchange={selectedExchange}
-        onExchangeChange={setSelectedExchange}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-      />
-
-      {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        {/* Arbitrage Opportunities Grid */}
-        <div className="xl:col-span-2">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredData.map((item) => (
-              <div key={item.id} className="animate-fade-in">
-                <FundingRateCard
-                  data={item}
-                  onClick={() => setSelectedCard(selectedCard === item.id ? null : item.id)}
-                  isHighlighted={selectedCard === item.id}
-                />
+        {/* SEO-optimized stats section */}
+        <section aria-labelledby="stats-heading">
+          <h3 id="stats-heading" className="sr-only">Statistiques d'arbitrage en temps réel</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article className="data-card" aria-labelledby="total-opportunities">
+              <div className="flex items-center">
+                <div className="p-3 bg-neon-cyan/20 rounded-lg">
+                  <BarChart3 className="w-6 h-6 text-neon-cyan" aria-hidden="true" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-gray-400 text-sm" id="total-opportunities">Opportunités Totales</p>
+                  <p className="font-orbitron font-bold text-2xl text-white">{totalOpportunities}</p>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Chart Panel */}
-        <div className="xl:col-span-1">
-          <div className="sticky top-6">
-            {selectedOpportunityData ? (
-              <div className="animate-slide-up">
-                <FundingRateChart
-                  data={chartData}
-                  exchange={`${selectedOpportunityData.longExchange} vs ${selectedOpportunityData.shortExchange}`}
-                  opportunityData={selectedOpportunityData}
-                />
+            </article>
+            
+            <article className="data-card" aria-labelledby="high-profit-ops">
+              <div className="flex items-center">
+                <div className="p-3 bg-neon-green/20 rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-neon-green" aria-hidden="true" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-gray-400 text-sm" id="high-profit-ops">Opportunités Haute Rentabilité</p>
+                  <p className="font-orbitron font-bold text-2xl text-neon-green">{highProfitCount}</p>
+                </div>
               </div>
-            ) : (
-              <div className="data-card h-96 flex items-center justify-center">
-                <div className="text-center">
-                  <BarChart3 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-400">
-                    Select an arbitrage opportunity to view detailed charts
+            </article>
+            
+            <article className="data-card" aria-labelledby="best-apy">
+              <div className="flex items-center">
+                <div className="p-3 bg-neon-purple/20 rounded-lg">
+                  <DollarSign className="w-6 h-6 text-neon-purple" aria-hidden="true" />
+                </div>
+                <div className="ml-4">
+                  <p className="text-gray-400 text-sm" id="best-apy">Meilleur APY Actuel</p>
+                  <p className="font-orbitron font-bold text-2xl text-white">
+                    {bestCurrentAPY.toFixed(2)}%
                   </p>
                 </div>
               </div>
-            )}
+            </article>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Collapsible Referral Links Section */}
-      <Collapsible open={isReferralLinksOpen} onOpenChange={setIsReferralLinksOpen}>
-        <CollapsibleTrigger asChild>
-          <Button
-            variant="outline"
-            className="w-full h-auto p-6 bg-gradient-to-r from-dark-100/90 to-dark-200/90 border-neon-orange/30 hover:border-neon-orange/50 transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-gradient-to-r from-neon-orange/20 to-neon-yellow/20 rounded-xl">
-                  <ExternalLink className="w-6 h-6 text-neon-orange" />
-                </div>
-                <div className="text-left">
-                  <h3 className="font-orbitron font-bold text-xl bg-gradient-to-r from-neon-orange to-neon-yellow bg-clip-text text-transparent">
-                    🚀 Plateformes Recommandées
-                  </h3>
-                  <p className="text-gray-400 font-orbitron text-sm">
-                    Accédez aux meilleures plateformes avec des bonus exclusifs
-                  </p>
-                </div>
-              </div>
-              <ChevronDown className={`w-6 h-6 text-neon-orange transition-transform duration-300 ${isReferralLinksOpen ? 'rotate-180' : ''}`} />
+        {/* Filters section */}
+        <section aria-labelledby="filters-heading">
+          <h3 id="filters-heading" className="sr-only">Filtres d'arbitrage avancés</h3>
+          <ArbitrageFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedProfitability={selectedProfitability}
+            onProfitabilityChange={setSelectedProfitability}
+            selectedExchange={selectedExchange}
+            onExchangeChange={setSelectedExchange}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+          />
+        </section>
+
+        {/* Main content section */}
+        <main className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* Arbitrage opportunities */}
+          <section className="xl:col-span-2" aria-labelledby="opportunities-heading">
+            <h3 id="opportunities-heading" className="sr-only">Opportunités d'arbitrage disponibles</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredData.map((item) => (
+                <article key={item.id} className="animate-fade-in">
+                  <FundingRateCard
+                    data={item}
+                    onClick={() => setSelectedCard(selectedCard === item.id ? null : item.id)}
+                    isHighlighted={selectedCard === item.id}
+                  />
+                </article>
+              ))}
             </div>
-          </Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent className="mt-4">
-          <ReferralLinks />
-        </CollapsibleContent>
-      </Collapsible>
-    </div>
+          </section>
+
+          {/* Chart panel */}
+          <aside className="xl:col-span-1" aria-labelledby="chart-heading">
+            <h3 id="chart-heading" className="sr-only">Graphiques détaillés</h3>
+            <div className="sticky top-6">
+              {selectedOpportunityData ? (
+                <div className="animate-slide-up">
+                  <FundingRateChart
+                    data={chartData}
+                    exchange={`${selectedOpportunityData.longExchange} vs ${selectedOpportunityData.shortExchange}`}
+                    opportunityData={selectedOpportunityData}
+                  />
+                </div>
+              ) : (
+                <div className="data-card h-96 flex items-center justify-center">
+                  <div className="text-center">
+                    <BarChart3 className="w-16 h-16 text-gray-600 mx-auto mb-4" aria-hidden="true" />
+                    <p className="text-gray-400">
+                      Sélectionnez une opportunité d'arbitrage pour voir les graphiques détaillés
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+        </main>
+
+        {/* Referral links section */}
+        <section aria-labelledby="referral-heading">
+          <h3 id="referral-heading" className="sr-only">Plateformes partenaires recommandées</h3>
+          <Collapsible open={isReferralLinksOpen} onOpenChange={setIsReferralLinksOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full h-auto p-6 bg-gradient-to-r from-dark-100/90 to-dark-200/90 border-neon-orange/30 hover:border-neon-orange/50 transition-all duration-300 group"
+                aria-expanded={isReferralLinksOpen}
+                aria-controls="referral-content"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-gradient-to-r from-neon-orange/20 to-neon-yellow/20 rounded-xl">
+                      <ExternalLink className="w-6 h-6 text-neon-orange" aria-hidden="true" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-orbitron font-bold text-xl bg-gradient-to-r from-neon-orange to-neon-yellow bg-clip-text text-transparent">
+                        🚀 Plateformes Recommandées
+                      </h4>
+                      <p className="text-gray-400 font-orbitron text-sm">
+                        Accédez aux meilleures plateformes avec des bonus exclusifs
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown className={`w-6 h-6 text-neon-orange transition-transform duration-300 ${isReferralLinksOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                </div>
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4" id="referral-content">
+              <ReferralLinks />
+            </CollapsibleContent>
+          </Collapsible>
+        </section>
+      </header>
+    </>
   );
 };
 
