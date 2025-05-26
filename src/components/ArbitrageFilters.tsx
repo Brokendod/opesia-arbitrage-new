@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, TrendingUp, TrendingDown, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Filter, TrendingUp, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -30,9 +30,7 @@ const ArbitrageFilters: React.FC<FiltersProps> = ({
 
   const profitabilityOptions = [
     { value: 'all', label: 'All Opportunities', icon: Star },
-    { value: 'high', label: 'High Profit', icon: TrendingUp },
-    { value: 'medium', label: 'Medium Profit', icon: Filter },
-    { value: 'low', label: 'Low Profit', icon: TrendingDown }
+    { value: 'high', label: 'High Profit', icon: TrendingUp }
   ];
 
   const exchanges = [
@@ -114,7 +112,7 @@ const ArbitrageFilters: React.FC<FiltersProps> = ({
                 <label className="block text-sm font-medium text-gray-300 mb-3 font-orbitron">
                   Profitability Level
                 </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {profitabilityOptions.map((option) => {
                     const Icon = option.icon;
                     const isSelected = selectedProfitability === option.value;
